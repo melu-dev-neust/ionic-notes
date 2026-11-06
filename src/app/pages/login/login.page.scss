@@ -1,0 +1,56 @@
+.auth-content { --background: var(--ion-background-color); }
+
+.auth-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 100%;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 32px 8px;
+}
+
+.brand {
+  text-align: center;
+  margin-bottom: 32px;
+  .brand-icon {
+    font-size: 3rem;
+    color: var(--ion-color-primary);
+  }
+  h1 {
+    font-size: 2rem;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    margin: 8px 0 0;
+  }
+}
+
+.auth-form {
+  background: transparent;
+  margin-bottom: 16px;
+  ion-item {
+    --background: var(--ion-color-step-50, #f5f5f5);
+    --border-radius: 12px;
+    border-radius: 12px;
+    margin-bottom: 12px;
+  }
+}
+
+.submit-btn {
+  margin-top: 8px;
+  --border-radius: 12px;
+  height: 48px;
+}
+
+.switch-link {
+  text-align: center;
+  margin-top: 24px;
+  font-size: 0.9rem;
+  color: var(--ion-color-medium);
+  a {
+    color: var(--ion-color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    margin-left: 4px;
+  }
+}
