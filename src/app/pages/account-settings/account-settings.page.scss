@@ -1,8 +1,56 @@
-h1 { font-size: 1.6rem; font-weight: 700; margin-bottom: 16px; }
+ion-header ion-toolbar {
+  --background: var(--note-bg);
+  --border-width: 0;
+}
+ion-content {
+  --background: var(--note-bg);
+  --padding-top: 16px;
+  --padding-start: var(--note-page-pad);
+  --padding-end: var(--note-page-pad);
+}
+
+ion-back-button { --color: var(--note-violet-soft); }
+
+h1 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--note-text);
+  margin-bottom: 16px;
+}
+
+ion-list {
+  background: transparent;
+  padding: 0;
+}
+
+ion-item {
+  --background: var(--note-surface);
+  --color: var(--note-text);
+  --border-color: var(--note-line);
+  --padding-start: 16px;
+  margin-bottom: 8px;
+  border-radius: var(--note-radius-chip);
+
+  p { color: var(--note-text-faint); font-size: 0.75rem; }
+  h2 { color: var(--note-text); font-size: 1rem; }
+}
+
+ion-button[expand="block"] {
+  --border-radius: var(--note-radius-chip);
+  --background: var(--note-surface);
+  --color: var(--note-violet-soft);
+  --border-color: var(--note-line);
+  --border-style: solid;
+  --border-width: 1px;
+  margin-top: 16px;
+  height: 48px;
+}
+
 .logout-wrap {
   position: absolute;
   bottom: 24px;
   left: 0;
   right: 0;
   text-align: center;
+  ion-button { --color: var(--ion-color-danger); font-weight: 600; }
 }

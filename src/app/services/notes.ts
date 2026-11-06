@@ -18,6 +18,7 @@ export class NotesService {
         { id: 6, note_title: 'Travel Checklist', note_content: 'Passport, charger, headphones, power bank, meds. Don’t forget the hotel confirmation email.', category: 'Personal', created_at: '2025-12-28T16:10:00' },
         { id: 7, note_title: 'Debugging Tips', note_content: 'Reproduce first. Isolate the smallest failing case. Read the error message properly before Googling.', category: 'Work', created_at: '2025-12-20T10:05:00' },
         { id: 8, note_title: 'Recipe: Pasta', note_content: 'Garlic, olive oil, cherry tomatoes, basil, parmesan. Reserve pasta water to emulsify the sauce.', category: 'Health', created_at: '2025-12-15T18:00:00' },
+        { id: 8, note_title: 'Time Management!!', note_content: 'problem again!', category: 'Personal', created_at: '2025-12-15T18:00:00' },
     ];
 
     private _sharedNotes: Note[] = [

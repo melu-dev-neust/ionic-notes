@@ -1,43 +1,167 @@
+ion-header ion-toolbar {
+  --background: var(--note-bg);
+  --border-width: 0;
+  --padding-top: 2px;
+  --padding-bottom: 2px;
+  --padding-start: var(--note-page-pad);
+  --padding-end: var(--note-page-pad);
+}
+
+ion-content {
+  --background: var(--note-bg);
+  --padding-top: 16px;
+  --padding-bottom: 96px;
+}
+
+// ---- Folder row ----
 .category-strip {
   display: flex;
   align-items: center;
   gap: 8px;
+  padding: 6px var(--note-page-pad) 10px;
+
+  .cards-scroll {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    padding-right: 14px;
+    -webkit-mask-image: linear-gradient(to right, #000 85%, transparent);
+    mask-image: linear-gradient(to right, #000 85%, transparent);
+    &::-webkit-scrollbar { display: none; }
+  }
+
+  .folder-btn {
+    --background: var(--note-surface);
+    --background-activated: var(--note-surface-2);
+    --color: var(--note-violet-soft);
+    --border-radius: var(--note-radius-chip);
+    --box-shadow: none;
+    --border-width: 1px;
+    --border-style: solid;
+    --border-color: var(--note-line);
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    font-size: 20px;
+  }
 }
-.cards-scroll {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  flex: 1;
-  scrollbar-width: none;
-  &::-webkit-scrollbar { display: none; }
-}
+
+// category chip (was ion-card)
 .category-card {
   min-width: 110px;
   margin: 0;
-  border-radius: 12px;
-  &.selected { --background: var(--ion-color-primary-tint); }
-  ion-card-content { padding: 12px; font-weight: 600; text-align: center; }
-}
-.folder-btn { font-size: 1.4rem; }
+  border-radius: var(--note-radius-chip);
+  --background: var(--note-surface);
+  --color: var(--note-text-muted);
+  border: 1px solid var(--note-line);
+  box-shadow: none;
 
+  ion-card-content {
+    padding: 10px 16px;
+    font-size: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-align: center;
+  }
+
+  &.selected {
+    --background: var(--note-surface-deep);
+    --color: var(--note-text);
+    border-color: rgba(196, 181, 253, 0.35);
+    ion-card-content { font-weight: 600; }
+  }
+}
+
+// ---- Masonry ----
 .masonry {
   column-count: 2;
-  column-gap: 12px;
-  margin-top: 16px;
+  column-gap: var(--note-gap);
+  padding: 0 var(--note-page-pad);
+  margin-top: 8px;
 }
+
 .note-card {
   break-inside: avoid;
-  margin: 0 0 12px 0;
   display: inline-block;
   width: 100%;
-  border-radius: 12px;
+  margin: 0 0 var(--note-gap) 0;
+  padding: 14px 14px 12px;
+  border-radius: var(--note-radius-card);
+  --background: var(--note-surface);
+  --color: var(--note-text);
+  border: 1px solid var(--note-line);
+  box-shadow: none;
+  transition: transform 0.15s, background 0.2s;
+
+  &:active {
+    transform: scale(0.97);
+    --background: var(--note-surface-2);
+  }
+
+  // optional accent variants
+  &.lilac {
+    --background: var(--note-surface-lilac);
+    border-color: rgba(196, 181, 253, 0.22);
+  }
+  &.deep {
+    --background: var(--note-surface-deep);
+    border-color: rgba(196, 181, 253, 0.3);
+  }
+
+  ion-card-header { padding: 0; }
+  ion-card-content { padding: 0; }
+
+  ion-card-title {
+    color: var(--note-text);
+    font-size: 15.5px;
+    font-weight: 600;
+    line-height: 1.25;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin-bottom: 6px;
+  }
 }
+
 .excerpt {
+  margin: 0 0 10px;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--note-text-muted);
   display: -webkit-box;
   -webkit-line-clamp: 4;
   -webkit-box-orient: vertical;
   overflow: hidden;
-  color: var(--ion-color-medium);
-  font-size: 0.85rem;
+  overflow-wrap: anywhere;
 }
-.date { font-size: 0.75rem; color: var(--ion-color-medium); opacity: 0.7; }
+
+.date {
+  display: block;
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--note-text-faint);
+}
+
+// ---- Add button ----
+ion-fab-button {
+  --background: var(--note-violet);
+  --background-activated: #7c3aed;
+  --color: #fff;
+  --box-shadow: 0 8px 22px var(--note-violet-glow);
+  width: 54px;
+  height: 54px;
+}
+
+@media (min-width: 768px) {
+  .masonry { column-count: 3; max-width: 700px; margin: 0 auto; }
+  .category-strip { max-width: 700px; margin: 0 auto; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .note-card, .category-card { transition: none; }
+}

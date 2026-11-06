@@ -1,2 +1,37 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
+
+// ============ VIOLET DARK THEME TOKENS ============
+:root {
+  --note-bg: #0c0914;
+  --note-surface: #181225;
+  --note-surface-2: #221a33;
+  --note-surface-lilac: #2c2145;
+  --note-surface-deep: #3a2a63;
+  --note-line: rgba(167, 139, 250, 0.14);
+
+  --note-text: #f1ecff;
+  --note-text-muted: #a99fc4;
+  --note-text-faint: #7d7399;
+
+  --note-violet: #8b5cf6;
+  --note-violet-soft: #c4b5fd;
+  --note-violet-glow: rgba(139, 92, 246, 0.4);
+
+  --note-radius-card: 18px;
+  --note-radius-chip: 13px;
+  --note-gap: 10px;
+  --note-page-pad: 14px;
+
+  // ---- Ionic palette mapped to the violet theme ----
+  --ion-background-color: var(--note-bg);
+  --ion-text-color: var(--note-text);
+  --ion-color-primary: #8b5cf6;
+  --ion-color-primary-rgb: 139, 92, 246;
+  --ion-color-primary-contrast: #ffffff;
+  --ion-color-primary-shade: #7c3aed;
+  --ion-color-primary-tint: #9d75f7;
+  --ion-color-medium: #a99fc4;
+  --ion-color-medium-rgb: 169, 159, 196;
+  --ion-color-danger: #f87171;
+}

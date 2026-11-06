@@ -1,3 +1,5 @@
+@use '../../../theme/variables.scss' as *;
+
 .masonry { column-count: 2; column-gap: 12px; }
 .note-card {
   break-inside: avoid;
@@ -15,3 +17,24 @@
   font-size: 0.85rem;
 }
 .date { font-size: 0.75rem; opacity: 0.7; }
+
+ion-header ion-toolbar {
+  --background: var(--note-bg);
+  --border-width: 0;
+}
+
+ion-content {
+  --background: var(--note-bg);
+  --padding-top: 16px;
+  --padding-bottom: 96px;
+}
+
+.masonry {
+  column-count: 2;
+  column-gap: var(--note-gap);
+  padding: 0 var(--note-page-pad);
+}
+
+.note-card {
+  // identical rules to my-notes.page.scss .note-card
+}

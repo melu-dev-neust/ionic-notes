@@ -1,15 +1,16 @@
 <ion-header>
   <ion-toolbar>
     <!-- spec: back arrow on RIGHT, share/move/delete on LEFT -->
-    <ion-buttons slot="start">
-      <ion-button (click)="share()"><ion-icon slot="icon-only" name="share-social-outline"></ion-icon></ion-button>
-      <ion-button (click)="move()"><ion-icon slot="icon-only" name="folder-open-outline"></ion-icon></ion-button>
-      <ion-button (click)="confirmDelete()"><ion-icon slot="icon-only" name="trash-outline"></ion-icon></ion-button>
-    </ion-buttons>
-    <ion-buttons slot="end">
+     <ion-buttons slot="start">
       <ion-button (click)="autosave()">
         <ion-icon slot="icon-only" name="arrow-back"></ion-icon>
       </ion-button>
+    </ion-buttons>
+
+    <ion-buttons slot="end">
+      <ion-button (click)="share()"><ion-icon slot="icon-only" name="share-social-outline"></ion-icon></ion-button>
+      <ion-button (click)="move()"><ion-icon slot="icon-only" name="folder-open-outline"></ion-icon></ion-button>
+      <ion-button (click)="confirmDelete()"><ion-icon slot="icon-only" name="trash-outline"></ion-icon></ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
