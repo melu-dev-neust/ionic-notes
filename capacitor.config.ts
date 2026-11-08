@@ -1,9 +1,9 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'io.ionic.starter',
-  appName: 'notes',
-  webDir: 'www'
+    appId: 'com.acpp.noteit',
+    appName: 'noteIT',
+    webDir: 'www'
 };
 
 export default config;

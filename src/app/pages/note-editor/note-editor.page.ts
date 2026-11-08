@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { take } from 'rxjs';
 import { AlertController, ActionSheetController, ToastController, IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonContent } from '@ionic/angular';
 import { NotesService } from '../../services/notes';
 import { Note } from '../../models/note';
+import { HapticsService } from '../../services/haptics';
 
 @Component({
     selector: 'app-note-editor',
@@ -14,6 +15,8 @@ import { Note } from '../../models/note';
     styleUrls: ['./note-editor.page.scss'],
 })
 export class NoteEditorPage implements OnInit {
+    private haptics = inject(HapticsService);
+
     note: Note = {
         note_id: 0,
         user_id: 1,
@@ -218,6 +221,7 @@ export class NoteEditorPage implements OnInit {
             },
         ],
         });
+        this.haptics.warning();
         await alert.present();
     }
 

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AlertController, IonHeader, IonToolbar, IonButtons, IonButton, IonContent, IonList, IonItem, IonLabel, IonIcon } from '@ionic/angular';
 import { NotesService } from '../../services/notes';
 import { Auth } from '../../services/auth';
+import { HapticsService } from '../../services/haptics';
 
 @Component({
     selector: 'app-account-settings',
@@ -13,6 +14,8 @@ import { Auth } from '../../services/auth';
     styleUrls: ['./account-settings.page.scss'],
     })
 export class AccountSettingsPage {
+    private haptics = inject(HapticsService);
+    
     get user() { return this.auth.getUser(); }
 
         constructor(
@@ -39,6 +42,7 @@ export class AccountSettingsPage {
                 },
             ],
         });
+        this.haptics.warning();
         await alert.present();
     }
 }

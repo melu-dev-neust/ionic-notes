@@ -9,7 +9,7 @@ import { Category } from '../models/category';
 export class NotesService {
     private http = inject(HttpClient);
 
-    private readonly api = 'http://localhost/api/ionic-notes-api/api/notes.php';
+    private readonly api = 'https://iroha.ct.ws/ionic-notes-api/api/notes.php';
 
     // ===== REACTIVE STATE =====
     private notesSubject = new BehaviorSubject<Note[]>([]);

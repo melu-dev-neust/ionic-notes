@@ -1,9 +1,10 @@
-import { Component, OnInit, ChangeDetectorRef  } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AlertController, ToastController, IonHeader, IonToolbar, IonTitle, IonButton, IonButtons, IonContent, IonList, IonItem, IonLabel, IonCard, IonIcon } from '@ionic/angular';
 import { NotesService } from '../../services/notes';
 import { Category } from '../../models/category';
+import { HapticsService } from '../../services/haptics';
 
 @Component({
     selector: 'app-category',
@@ -13,6 +14,8 @@ import { Category } from '../../models/category';
     styleUrls: ['./category.page.scss'],
 })
 export class CategoryPage implements OnInit {
+    private haptics = inject(HapticsService);
+    
     categories: Category[] = [];
     deleteMode = false;
     selectedIds = new Set<number>();
@@ -76,6 +79,7 @@ export class CategoryPage implements OnInit {
                     { text: 'Cancel', role: 'cancel' },{text: 'Delete',role: 'destructive',handler: () => this.deleteSelected(),},
                 ],
         });
+        this.haptics.warning();
         await alert.present();
     }
 

@@ -14,7 +14,7 @@ interface AuthResponse {
 export class Auth {
     private http = inject(HttpClient);
 
-    private readonly api = 'http://localhost/api/ionic-notes-api/api/auth.php';
+    private readonly api = 'https://iroha.ct.ws/ionic-notes-api/api/auth.php';
     private readonly userKey = 'noteit_user';
     private readonly tokenKey = 'noteit_token';
 
