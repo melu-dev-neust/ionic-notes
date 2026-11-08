@@ -8,39 +8,53 @@ import { Category } from '../../models/category';
 import { IonHeader, IonToolbar, IonContent, IonCardContent, IonCard, IonButton, IonIcon, IonCardHeader, IonCardTitle, IonFab, IonFabButton } from "@ionic/angular";
 
 @Component({
-  selector: 'app-my-notes',
-  imports: [IonFabButton, IonFab, IonCardTitle, IonCardHeader, IonIcon, IonButton, IonCard, IonCardContent, IonContent, IonToolbar, IonHeader, CommonModule, RouterLink, MainNavbarComponent],
-  templateUrl: './my-notes.page.html',
-  styleUrls: ['./my-notes.page.scss'],
+    selector: 'app-my-notes',
+    imports: [IonFabButton, IonFab, IonCardTitle, IonCardHeader, IonIcon, IonButton, IonCard, IonCardContent, IonContent, IonToolbar, IonHeader, CommonModule, RouterLink, MainNavbarComponent],
+    templateUrl: './my-notes.page.html',
+    styleUrls: ['./my-notes.page.scss'],
 })
 export class MyNotesPage implements OnInit {
-  categories: Category[] = [];
-  notes: Note[] = [];
-  activeCategory = 'All';
-  filteredNotes: Note[] = [];
+    categories: Category[] = [];
+    notes: Note[] = [];
+    activeCategory = 'All';
+    filteredNotes: Note[] = [];
 
-  constructor(private notesService: NotesService, private router: Router) {}
+    constructor(private notesService: NotesService, private router: Router) {}
 
-  ngOnInit() {
-    this.notesService.categories$.subscribe(c => (this.categories = c));
+    ngOnInit() {
+    this.notesService.getAllNotes();
+    this.notesService.getAllCategories();
+
+    this.notesService.categories$.subscribe(c => {
+        this.categories = c;
+        this.applyFilter();
+    });
+
     this.notesService.notes$.subscribe(n => {
-      this.notes = n;
-      this.applyFilter();
+        this.notes = n;
+        this.applyFilter();
     });
+
     this.notesService.activeCategory$.subscribe(c => {
-      this.activeCategory = c;
-      this.applyFilter();
+        this.activeCategory = c;
+        this.applyFilter();
     });
-  }
+}
 
-  applyFilter() {
-    this.filteredNotes =
-      this.activeCategory === 'All'
-        ? this.notes
-        : this.notes.filter(n => n.category === this.activeCategory);
-  }
+    applyFilter() {
+    if (this.activeCategory === 'All') {
+        this.filteredNotes = this.notes;
+        return;
+    }
 
-  selectCategory(name: string) {
+    const selectedCategory = this.categories.find(
+        c => c.category_name === this.activeCategory
+    );
+
+    this.filteredNotes = selectedCategory ? this.notes.filter(n => n.category_id === selectedCategory.category_id) : [];
+}
+
+    selectCategory(name: string) {
     // clicking a category card filters notes here
     this.notesService.setActiveCategory(
       this.activeCategory === name ? 'All' : name
@@ -48,7 +62,7 @@ export class MyNotesPage implements OnInit {
   }
 
   openNote(note: Note) {
-    this.router.navigate(['/note-editor', note.id]);
+    this.router.navigate(['/note-editor', note.note_id]);
   }
 
   addNote() {
@@ -59,4 +73,6 @@ export class MyNotesPage implements OnInit {
   goToFolders() {
     this.router.navigate(['/category']);
   }
+
+  
 }

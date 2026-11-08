@@ -1,32 +1,31 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { AlertController, ActionSheetController, ToastController, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent } from '@ionic/angular';
+import { take } from 'rxjs';
+import { AlertController, ActionSheetController, ToastController, IonHeader, IonToolbar, IonButtons, IonButton, IonIcon, IonContent } from '@ionic/angular';
 import { NotesService } from '../../services/notes';
 import { Note } from '../../models/note';
 
 @Component({
   selector: 'app-note-editor',
-  imports: [IonContent, IonIcon, IonButton, IonButtons, IonTitle, IonToolbar, IonHeader, CommonModule, FormsModule],
+  imports: [IonContent, IonIcon, IonButton, IonButtons, IonToolbar, IonHeader, CommonModule, FormsModule],
   templateUrl: './note-editor.page.html',
   styleUrls: ['./note-editor.page.scss'],
 })
 export class NoteEditorPage implements OnInit, OnDestroy {
   note: Note = {
-    id: 0,
+    note_id: 0,
+    user_id: 1,
+    category_id: null,
     note_title: '',
     note_content: '',
-    category: null,
     created_at: new Date().toISOString(),
   };
   isNew = false;
   editable = false;
   isShared = false;
-  private original: string = '';
-
-  @ViewChild('titleInput') titleInput!: ElementRef<HTMLInputElement>;
-  @ViewChild('contentInput') contentInput!: ElementRef<HTMLTextAreaElement>;
+  private original = '';
 
   constructor(
     private route: ActivatedRoute,
@@ -44,62 +43,93 @@ export class NoteEditorPage implements OnInit, OnDestroy {
     if (idParam === 'new' || idParam === null) {
       this.isNew = true;
       this.editable = true;
-      this.note.category =
-        this.notesService.getActiveCategory() === 'All'
-          ? null
-          : this.notesService.getActiveCategory();
+      this.note.category_id = this.notesService.getActiveCategoryId();
+      return;
+    }
+
+    if (this.isShared) {
+      const s = this.notesService.getSharedNote(+idParam);
+      if (!s) { this.goBack(); return; }
+      // map the shared note into the Note shape so the same template works
+      this.note = {
+        note_id: s.sharedNote_id,
+        user_id: s.user_id,
+        category_id: null,
+        note_title: s.sharedNote_title,
+        note_content: s.sharedNote_content,
+        created_at: s.created_at,
+      };
     } else {
       const existing = this.notesService.getNote(+idParam);
-      if (existing) {
-        this.note = { ...existing };
-        this.editable = false;
-      }
-      this.original = JSON.stringify(this.note);
+      if (!existing) { this.goBack(); return; }
+      this.note = { ...existing };
     }
+    this.editable = false;
+    this.original = JSON.stringify(this.note);
   }
 
   ngOnDestroy() {}
 
-  /** Clicking the title or content flips into editable mode */
   enableEdit() {
     if (this.isShared) return;
     this.editable = true;
-    setTimeout(() => this.titleInput?.nativeElement.focus());
   }
 
-  /** Save on back arrow (also called when leaving) */
-  autosave() {
-    if (this.isShared) return;
-    if (!this.note.note_title.trim() && !this.note.note_content.trim()) {
-      // do not save empty notes
-      this.goBack();
-      return;
-    }
-    if (this.isNew) {
-      const saved = this.notesService.addNote(
-        this.note.note_title,
-        this.note.note_content,
-        this.note.category
-      );
-      this.note.id = saved.id;
+  private isEmpty() {
+    return !this.note.note_title.trim() && !this.note.note_content.trim();
+  }
+
+  /** Creates or updates on the server, then runs `after` */
+  private persist(after: () => void) {
+    const done = (saved: Note) => {
+      this.note = { ...saved };
       this.isNew = false;
+      this.original = JSON.stringify(this.note);
+      after();
+    };
+    const fail = (err: any) => this.presentToast(err?.error?.error ?? 'Could not save note');
+
+    if (this.isNew) {
+      this.notesService
+        .addNote(this.note.note_title, this.note.note_content, this.note.category_id)
+        .subscribe({ next: done, error: fail });
     } else {
-      this.notesService.updateNote(this.note.id, {
-        note_title: this.note.note_title,
-        note_content: this.note.note_content,
-      });
+      this.notesService
+        .updateNote(this.note.note_id, {
+          note_title: this.note.note_title,
+          note_content: this.note.note_content,
+        })
+        .subscribe({ next: done, error: fail });
     }
-    this.original = JSON.stringify(this.note);
-    this.goBack();
+  }
+
+  /** Save on back arrow */
+  autosave() {
+    if (this.isShared) { this.goBack(); return; }
+    if (this.isEmpty()) { this.goBack(); return; }
+    // skip the request if nothing changed
+    if (!this.isNew && JSON.stringify(this.note) === this.original) { this.goBack(); return; }
+    this.persist(() => this.goBack());
   }
 
   goBack() {
     this.router.navigate([this.isShared ? '/shared-notes' : '/my-notes']);
   }
 
+  saveNote() {
+    if (this.isShared) return;
+    if (this.isEmpty()) { this.goBack(); return; }
+    this.persist(() => (this.editable = false));
+  }
+
   // ===== Navbar actions =====
 
   async share() {
+    if (this.isShared) return;
+    if (this.isNew) {
+      this.presentToast('Save the note before sharing');
+      return;
+    }
     const alert = await this.alertCtrl.create({
       header: 'Share Note',
       message: 'Enter the username to share with',
@@ -109,10 +139,12 @@ export class NoteEditorPage implements OnInit, OnDestroy {
         {
           text: 'Share',
           handler: (data) => {
-            if (data.username?.trim()) {
-              this.notesService.shareNote(this.note, data.username.trim());
-              this.presentToast(`Shared with @${data.username.trim()}`);
-            }
+            const username = data.username?.trim();
+            if (!username) return;
+            this.notesService.shareNote(this.note.note_id, username).subscribe({
+              next: () => this.presentToast(`Shared with @${username}`),
+              error: (err) => this.presentToast(err?.error?.error ?? 'Could not share note'),
+            });
           },
         },
       ],
@@ -121,28 +153,31 @@ export class NoteEditorPage implements OnInit, OnDestroy {
   }
 
   async move() {
-    this.notesService.categories$.subscribe(async cats => {
+    if (this.isShared) return;
+    this.notesService.categories$.pipe(take(1)).subscribe(async cats => {
       const buttons = [
         { text: 'No Category', handler: () => this.doMove(null) },
-        ...cats.map(c => ({ text: c.name, handler: () => this.doMove(c.name) })),
+        ...cats.map(c => ({ text: c.category_name ?? '', handler: () => this.doMove(c.category_id) })),
         { text: 'Cancel', role: 'cancel' },
       ];
-      const sheet = await this.actionSheetCtrl.create({
-        header: 'Move to folder',
-        buttons,
-      });
+
+      const sheet = await this.actionSheetCtrl.create({ header: 'Move to folder', buttons });
       await sheet.present();
     });
   }
 
-  private doMove(category: string | null) {
-    if (!this.note.id) {
-      this.note.category = category; // not saved yet, just set it
+  private doMove(category_id: number | null) {
+    if (this.isNew) {
+      this.note.category_id = category_id; // not saved yet, just set it
       return;
     }
-    this.notesService.moveNote(this.note.id, category);
-    this.note.category = category;
-    this.presentToast('Moved');
+    this.notesService.moveNote(this.note.note_id, category_id).subscribe({
+      next: () => {
+        this.note.category_id = category_id;
+        this.presentToast('Moved');
+      },
+      error: (err) => this.presentToast(err?.error?.error ?? 'Could not move note'),
+    });
   }
 
   async confirmDelete() {
@@ -155,8 +190,14 @@ export class NoteEditorPage implements OnInit, OnDestroy {
           text: 'Delete',
           role: 'destructive',
           handler: () => {
-            if (this.note.id) this.notesService.deleteNote(this.note.id);
-            this.goBack();
+            if (this.isNew) { this.goBack(); return; }
+            const req = this.isShared
+              ? this.notesService.deleteSharedNote(this.note.note_id)
+              : this.notesService.deleteNote(this.note.note_id);
+            req.subscribe({
+              next: () => this.goBack(),
+              error: (err) => this.presentToast(err?.error?.error ?? 'Could not delete note'),
+            });
           },
         },
       ],

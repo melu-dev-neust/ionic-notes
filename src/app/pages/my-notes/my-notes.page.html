@@ -1,44 +1,48 @@
-<ion-header>
-  <ion-toolbar><app-main-navbar active="notes"></app-main-navbar></ion-toolbar>
-</ion-header>
+<app-main-navbar active="notes"></app-main-navbar>
 
-<ion-content class="ion-padding">
-  <!-- Category strip -->
-  <div class="category-strip">
-    <div class="cards-scroll">
-      <ion-card
-        *ngFor="let c of categories"
-        class="category-card ion-activatable"
-        [class.selected]="activeCategory === c.name"
-        (click)="selectCategory(c.name)">
-        <ion-card-content>{{ c.name }}</ion-card-content>
-      </ion-card>
+<ion-content >
+    <!-- Category strip -->
+    <div class="category">
+        <div class="category-strip">
+
+            <div class="cards-scroll">
+                @for(c of categories; track $index){
+                    <ion-card class="category-card ion-activatable" [class.selected]="activeCategory === c.category_name" (click)="selectCategory(c.category_name!)">
+                        <ion-card-content>{{ c.category_name }}</ion-card-content>
+                    </ion-card>
+                }
+            </div>
+
+            <ion-button fill="clear" class="folder-btn" (click)="goToFolders()">
+                <ion-icon slot="icon-only" name="folder-outline"></ion-icon>
+            </ion-button>
+
+        </div>
     </div>
-    <ion-button fill="clear" class="folder-btn" (click)="goToFolders()">
-      <ion-icon slot="icon-only" name="folder-outline"></ion-icon>
-    </ion-button>
-  </div>
 
-  <!-- Notes masonry -->
-  <div class="masonry">
-    <ion-card
-      *ngFor="let note of filteredNotes"
-      class="note-card ion-activatable"
-      (click)="openNote(note)">
-      <ion-card-header>
-        <ion-card-title>{{ note.note_title }}</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p class="excerpt">{{ note.note_content }}</p>
-        <p class="date">{{ note.created_at | date:'MMM d, y' }}</p>
-      </ion-card-content>
-    </ion-card>
-  </div>
+    <!-- Notes masonry -->
+    <div class="masonry">
+        @for(note of filteredNotes; track $index){
+            <ion-card class="note-card ion-activatable" (click)="openNote(note)">
+                
+                <ion-card-header>
+                    <ion-card-title>{{ note.note_title }}</ion-card-title>
+                </ion-card-header>
 
-  <!-- Add button -->
-  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="addNote()">
-      <ion-icon name="add"></ion-icon>
-    </ion-fab-button>
-  </ion-fab>
+                <ion-card-content>
+                    <p class="excerpt">{{ note.note_content }}</p>
+                    <p class="date">{{ note.created_at | date:'MMM d, y' }}</p>
+                </ion-card-content>
+
+            </ion-card>
+        }
+    </div>
+
+    <!-- Add button -->
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+        <ion-fab-button (click)="addNote()">
+            <ion-icon name="add"></ion-icon>
+        </ion-fab-button>
+    </ion-fab>
+
 </ion-content>

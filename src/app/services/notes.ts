@@ -1,150 +1,162 @@
-import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { inject, Injectable } from '@angular/core';
+import { BehaviorSubject, Observable, tap } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 import { Note } from '../models/note';
+import { SharedNote } from '../models/shared-note';
 import { Category } from '../models/category';
-import { User } from '../models/user';
 
 @Injectable({ providedIn: 'root' })
 export class NotesService {
+  private http = inject(HttpClient);
 
-  // ===== FAKE DATA (replace with HttpClient calls to your PHP API later) =====
-
-    private _notes: Note[] = [
-        { id: 1, note_title: 'Grocery List', note_content: 'Milk, eggs, bread, butter, apples, and a bag of coffee beans for the weekend.', category: 'Personal', created_at: '2026-01-12T09:15:00' },
-        { id: 2, note_title: 'Project Ideas', note_content: 'Build a habit tracker. Maybe a recipe manager with meal planning. Or a budget app that syncs across devices.', category: 'Work', created_at: '2026-01-10T14:30:00' },
-        { id: 3, note_title: 'Meeting Notes', note_content: 'Discussed Q1 roadmap. Priorities: auth flow, dashboard redesign, and API rate limiting. Next sync Friday.', category: 'Work', created_at: '2026-01-08T11:00:00' },
-        { id: 4, note_title: 'Book Recommendations', note_content: 'The Pragmatic Programmer. Designing Data-Intensive Applications. Refactoring by Martin Fowler.', category: 'Personal', created_at: '2026-01-05T19:45:00' },
-        { id: 5, note_title: 'Workout Plan', note_content: 'Monday legs, Wednesday push, Friday pull. Add 20 min cardio after each session. Rest on weekends.', category: 'Health', created_at: '2026-01-03T07:20:00' },
-        { id: 6, note_title: 'Travel Checklist', note_content: 'Passport, charger, headphones, power bank, meds. Don’t forget the hotel confirmation email.', category: 'Personal', created_at: '2025-12-28T16:10:00' },
-        { id: 7, note_title: 'Debugging Tips', note_content: 'Reproduce first. Isolate the smallest failing case. Read the error message properly before Googling.', category: 'Work', created_at: '2025-12-20T10:05:00' },
-        { id: 8, note_title: 'Recipe: Pasta', note_content: 'Garlic, olive oil, cherry tomatoes, basil, parmesan. Reserve pasta water to emulsify the sauce.', category: 'Health', created_at: '2025-12-15T18:00:00' },
-        { id: 8, note_title: 'Time Management!!', note_content: 'problem again!', category: 'Personal', created_at: '2025-12-15T18:00:00' },
-    ];
-
-    private _sharedNotes: Note[] = [
-        { id: 101, note_title: 'Team Retro', note_content: 'What went well: shipping on time. What didn’t: too many context switches. Action: batch meetings.', category: 'Work', created_at: '2026-01-11T13:00:00' },
-        { id: 102, note_title: 'Re: Trip Photos', note_content: 'Sending over the drive link. Let me know which ones you want to keep — I’ll delete the rest.', category: null, created_at: '2026-01-09T08:40:00' },
-        { id: 103, note_title: 'Shared Budget', note_content: 'Groceries this month: $312. Utilities: $98. Let’s split the difference next weekend.', category: 'Personal', created_at: '2026-01-02T21:00:00' },
-    ];
-
-    private _categories: Category[] = [
-        { id: 1, name: 'Personal' },
-        { id: 2, name: 'Work' },
-        { id: 3, name: 'Health' },
-    ];
-
-    private _user: User = { id: 1, email: 'alex@example.com', username: 'alex_dev' };
-
+  private readonly api = 'http://localhost/api/ionic-notes-api/api/notes.php';
+  private readonly userId = 1; // hardcoded until login exists
 
   // ===== REACTIVE STATE =====
-
-  private notesSubject = new BehaviorSubject<Note[]>(this._notes);
+  private notesSubject = new BehaviorSubject<Note[]>([]);
   notes$ = this.notesSubject.asObservable();
 
-  private sharedSubject = new BehaviorSubject<Note[]>(this._sharedNotes);
+  private sharedSubject = new BehaviorSubject<SharedNote[]>([]);
   sharedNotes$ = this.sharedSubject.asObservable();
 
-  private categoriesSubject = new BehaviorSubject<Category[]>(this._categories);
+  private categoriesSubject = new BehaviorSubject<Category[]>([]);
   categories$ = this.categoriesSubject.asObservable();
 
-  // Currently selected category filter ('All' = no filter)
+  // Currently selected category filter by name ('All' = no filter)
   private activeCategorySubject = new BehaviorSubject<string>('All');
   activeCategory$ = this.activeCategorySubject.asObservable();
-
-  getUser(): User { return this._user; }
 
   setActiveCategory(name: string) {
     this.activeCategorySubject.next(name);
   }
+
   getActiveCategory(): string {
     return this.activeCategorySubject.value;
   }
 
-  // ===== NOTES =====
-
-  getNote(id: number): Note | undefined {
-    return this.notesSubject.value.find(n => n.id === id);
+  /** category_id of the active filter, or null when 'All' */
+  getActiveCategoryId(): number | null {
+    const name = this.getActiveCategory();
+    if (name === 'All') return null;
+    return this.categoriesSubject.value.find(c => c.category_name === name)?.category_id ?? null;
   }
 
-  /** Create a note. Category is auto-assigned to the active one if provided. */
-  addNote(note_title: string, note_content: string, category?: string | null): Note {
-    const cat = category ?? (this.getActiveCategory() === 'All' ? null : this.getActiveCategory());
-    const note: Note = {
-      id: Date.now(),
+  // ===== LOADERS =====
+  getAllNotes() {
+    this.http.get<Note[]>(`${this.api}?type=my-notes&userId=${this.userId}`).subscribe({
+      next: res => this.notesSubject.next(res),
+      error: err => console.error(err),
+    });
+  }
+
+  getAllSharedNotes() {
+    this.http.get<SharedNote[]>(`${this.api}?type=shared-notes&userId=${this.userId}`).subscribe({
+      next: res => this.sharedSubject.next(res),
+      error: err => console.error(err),
+    });
+  }
+
+  getAllCategories() {
+    this.http.get<Category[]>(`${this.api}?type=categories&userId=${this.userId}`).subscribe({
+      next: res => this.categoriesSubject.next(res),
+      error: err => console.error(err),
+    });
+  }
+
+  // ===== NOTES =====
+  getNote(id: number): Note | undefined {
+    return this.notesSubject.value.find(n => n.note_id === id);
+  }
+  
+  getSharedNote(id: number): SharedNote | undefined {
+  return this.sharedSubject.value.find(s => s.sharedNote_id === id);
+}
+
+  /** Create a note. Category defaults to the active filter if not given. */
+  addNote(note_title: string, note_content: string, category_id?: number | null): Observable<Note> {
+    const body = {
+      user_id: this.userId,
+      category_id: category_id !== undefined ? category_id : this.getActiveCategoryId(),
       note_title: note_title || 'Untitled',
       note_content,
-      category: cat,
-      created_at: new Date().toISOString(),
     };
-    this.notesSubject.next([note, ...this.notesSubject.value]);
-    return note;
-  }
-
-  updateNote(id: number, changes: Partial<Note>) {
-    const updated = this.notesSubject.value.map(n =>
-      n.id === id ? { ...n, ...changes, created_at: new Date().toISOString() } : n
+    return this.http.post<Note>(`${this.api}?type=note`, body).pipe(
+      tap(created => this.notesSubject.next([created, ...this.notesSubject.value]))
     );
-    this.notesSubject.next(updated);
   }
 
-  /** Autosave used by the editor page. Creates if id is 0/new, otherwise updates. */
-  saveNote(note: Partial<Note> & { id?: number }): Note {
-    if (note.id) {
-      this.updateNote(note.id, note);
-      return this.getNote(note.id)!;
+  updateNote(id: number, changes: Partial<Note>): Observable<Note> {
+    const current = this.getNote(id);
+    // API expects title, content and category_id on every PUT, so merge with the current note
+    const body = {
+      note_title: changes.note_title ?? current?.note_title ?? 'Untitled',
+      note_content: changes.note_content ?? current?.note_content ?? '',
+      category_id: changes.category_id !== undefined ? changes.category_id : (current?.category_id ?? null),
+    };
+    return this.http.put<Note>(`${this.api}?type=note&id=${id}`, body).pipe(
+      tap(updated =>
+        this.notesSubject.next(this.notesSubject.value.map(n => (n.note_id === id ? updated : n)))
+      )
+    );
+  }
+
+  /** Autosave for the editor: creates if there's no note_id, otherwise updates. */
+  saveNote(note: Partial<Note>): Observable<Note> {
+    if (note.note_id) {
+      return this.updateNote(note.note_id, note);
     }
-    return this.addNote(note.note_title || '', note.note_content || '', note.category ?? null);
+    return this.addNote(note.note_title || '', note.note_content || '', note.category_id);
   }
 
   deleteNote(id: number) {
-    this.notesSubject.next(this.notesSubject.value.filter(n => n.id !== id));
+    return this.http.delete(`${this.api}?type=note&id=${id}`).pipe(
+      tap(() => this.notesSubject.next(this.notesSubject.value.filter(n => n.note_id !== id)))
+    );
   }
 
-  moveNote(id: number, category: string | null) {
-    this.updateNote(id, { category });
+  moveNote(id: number, category_id: number | null) {
+    return this.updateNote(id, { category_id });
   }
 
-  /** Share a note to another user (stubbed — PHP API later). */
-  shareNote(note: Note, targetUsername: string) {
-    // TODO: POST to /api/share.php { note_id, target_username }
-    console.log(`Sharing note ${note.id} with ${targetUsername}`);
+  // ===== SHARING =====
+  shareNote(note_id: number, target_username: string) {
+    return this.http.post<{ shared: boolean }>(`${this.api}?type=share`, { note_id, target_username });
+    // errors come back as err.error.error (e.g. "User not found", "Already shared with this user")
+  }
+
+  deleteSharedNote(id: number) {
+    return this.http.delete(`${this.api}?type=shared-note&id=${id}`).pipe(
+      tap(() => this.sharedSubject.next(this.sharedSubject.value.filter(s => s.sharedNote_id !== id)))
+    );
   }
 
   // ===== CATEGORIES =====
+  deleteCategories(ids: number[]) {
+  return this.http
+    .delete(`${this.api}?type=category&ids=${ids.join(',')}&userId=${this.userId}`)
+    .pipe(
+      tap(() => {
+        // if the active filter is one of the deleted folders, go back to 'All'
+        const activeId = this.getActiveCategoryId();
+        if (activeId !== null && ids.includes(Number(activeId))) {
+          this.setActiveCategory('All');
+        }
+        this.categoriesSubject.next(
+          this.categoriesSubject.value.filter(c => !ids.includes(Number(c.category_id)))
+        );
+        // their notes are deleted too
+        this.notesSubject.next(
+          this.notesSubject.value.filter(
+            n => n.category_id == null || !ids.includes(Number(n.category_id))
+          )
+        );
+      })
+    );
+}
 
-  addCategory(name: string): Category {
-    const cat: Category = { id: Date.now(), name };
-    this.categoriesSubject.next([...this.categoriesSubject.value, cat]);
-    return cat;
+  addCategory(category_name: string): Observable<Category> {
+    return this.http
+      .post<Category>(`${this.api}?type=category`, { user_id: this.userId, category_name })
+      .pipe(tap(cat => this.categoriesSubject.next([...this.categoriesSubject.value, cat])));
   }
-
-
-
-
-  // ===== AUTH (stub — replace with HttpClient calls to your PHP API later) =====
-
-  // login(email, password) / register(email, password, username) / logout()
-  // searchUser(username) etc.
-  
-/** Returns true on success. TODO: POST /api/login.php { email, password } */
-login(email: string, password: string): boolean {
-  // fake check: any non-empty credentials "succeed" for now
-  if (!email || !password) return false;
-  this._user = { id: 1, email, username: email.split('@')[0] };
-  return true;
-}
-
-/** Returns true on success, false if username is taken. TODO: POST /api/register.php */
-register(email: string, password: string, username: string): boolean {
-  // fake uniqueness check against a small list
-  const taken = ['alex_dev', 'admin', 'test'].includes(username.toLowerCase());
-  if (taken) return false;
-  this._user = { id: 1, email, username };
-  return true;
-}
-
-logout() {
-  // TODO: clear token
-}
-
 }

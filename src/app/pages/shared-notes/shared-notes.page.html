@@ -1,20 +1,20 @@
-<ion-header>
-  <ion-toolbar><app-main-navbar active="shared"></app-main-navbar></ion-toolbar>
-</ion-header>
+<app-main-navbar active="shared"></app-main-navbar>
 
-<ion-content class="ion-padding">
-  <div class="masonry">
-    <ion-card
-      *ngFor="let note of sharedNotes"
-      class="note-card ion-activatable"
-      (click)="openNote(note)">
-      <ion-card-header>
-        <ion-card-title>{{ note.note_title }}</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        <p class="excerpt">{{ note.note_content }}</p>
-        <p class="date">{{ note.created_at | date:'MMM d, y' }}</p>
-      </ion-card-content>
-    </ion-card>
-  </div>
+<ion-content>
+    <div class="masonry">
+        @for(note of sharedNotes; track note.sharedNote_id){
+            <ion-card class="note-card ion-activatable" (click)="openNote(note)">
+
+                <ion-card-header>
+                    <ion-card-title>{{ note.sharedNote_title }}</ion-card-title>
+                </ion-card-header>
+
+                <ion-card-content>
+                    <p class="excerpt">{{ note.sharedNote_content }}</p>
+                    <p class="date">{{ note.created_at | date:'MMM d, y' }}</p>
+                </ion-card-content>
+
+            </ion-card>
+        }
+    </div>
 </ion-content>

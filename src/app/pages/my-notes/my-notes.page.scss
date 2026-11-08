@@ -1,19 +1,25 @@
-ion-header ion-toolbar {
-  --background: var(--note-bg);
-  --border-width: 0;
-  --padding-top: 2px;
-  --padding-bottom: 2px;
-  --padding-start: var(--note-page-pad);
-  --padding-end: var(--note-page-pad);
-}
+// ion-header ion-toolbar {
+//   --background: var(--note-bg);
+//   --border-width: 0;
+//   --padding-top: 2px;
+//   --padding-bottom: 2px;
+//   --padding-start: var(--note-page-pad);
+//   --padding-end: var(--note-page-pad);
+// }
 
 ion-content {
   --background: var(--note-bg);
-  --padding-top: 16px;
+//   --padding-top: 16px;
   --padding-bottom: 96px;
 }
 
 // ---- Folder row ----
+.category {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: var(--note-bg);
+}
 .category-strip {
   display: flex;
   align-items: center;
@@ -81,7 +87,7 @@ ion-content {
   column-count: 2;
   column-gap: var(--note-gap);
   padding: 0 var(--note-page-pad);
-  margin-top: 8px;
+  margin-top: 5px;
 }
 
 .note-card {

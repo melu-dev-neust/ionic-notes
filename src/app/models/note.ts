@@ -1,7 +1,8 @@
 export interface Note {
-  id: number;
+  note_id: number;
+  user_id: number;
+  category_id: number | null;
   note_title: string;
   note_content: string;
-  category: string | null;   // category name, or null for "All" / uncategorized
-  created_at: string;        // ISO string
+  created_at: string;
 }

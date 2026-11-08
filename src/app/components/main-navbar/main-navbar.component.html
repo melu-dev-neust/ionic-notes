@@ -1,15 +1,21 @@
- <ion-toolbar class="custom-toolbar">
-      <div class="navigation">
-        <div class="navigation-buttons">
-          <ion-button class="nav-button" routerLink="/my-notes" [class.active]="active === 'notes'">
-            <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
-          </ion-button>
-          <ion-button class="nav-button" routerLink="/shared-notes" [class.active]="active === 'shared'">
-            <ion-icon slot="icon-only" name="share-social-outline"></ion-icon>
-          </ion-button>
+    <ion-toolbar class="custom-toolbar">
+        <div class="navigation">
+
+            <div class="navigation-buttons">
+                <ion-button class="nav-button" routerLink="/my-notes" [class.active]="active === 'notes'">
+                    <ion-icon slot="icon-only" name="document-text-outline"></ion-icon>
+                    <span>My Notes</span>
+                </ion-button>
+                
+                <ion-button class="nav-button" routerLink="/shared-notes" [class.active]="active === 'shared'">
+                    <ion-icon slot="icon-only" name="share-social-outline"></ion-icon>
+                    <span>Shared Notes</span>
+                </ion-button>
+            </div>
+
+            <ion-button class="account" routerLink="/account-settings">
+                <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
+            </ion-button>
+
         </div>
-        <ion-button class="account" routerLink="/account-settings" [class.active]="active === 'account'">
-          <ion-icon slot="icon-only" name="person-circle-outline"></ion-icon>
-        </ion-button>
-      </div>
-    </ion-toolbar>
+        </ion-toolbar>

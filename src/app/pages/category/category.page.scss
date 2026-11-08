@@ -3,6 +3,7 @@ ion-header ion-toolbar {
   --border-width: 0;
   --padding-start: var(--note-page-pad);
   --padding-end: var(--note-page-pad);
+  padding:5px 0;
 }
 ion-content {
   --background: var(--note-bg);
@@ -42,3 +43,12 @@ ion-item {
 
 ion-title { color: var(--note-text); }
 ion-back-button { --color: var(--note-violet-soft); }
+
+ion-item.selected {
+  --background: rgba(139, 92, 246, 0.25);
+  --color: #c4b5fd;
+}
+
+.delete-folder {
+  margin-top: 16px;
+}
