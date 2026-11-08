@@ -13,18 +13,16 @@
         <ion-item>
         <ion-label>
             <p>Username</p>
-            <h2>{{ user.username }}</h2>
+            <h2>{{ user?.username }}</h2>
         </ion-label>
         </ion-item>
         <ion-item>
         <ion-label>
             <p>Email</p>
-            <h2>{{ user.email }}</h2>
+            <h2>{{ user?.email }}</h2>
         </ion-label>
         </ion-item>
     </ion-list>
-
-  <ion-button expand="block" (click)="changePassword()">Change Password</ion-button>
 
   <div class="logout-wrap">
     <ion-button fill="clear" color="danger" (click)="logout()">Log Out</ion-button>

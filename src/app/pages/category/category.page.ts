@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AlertController, ToastController, IonHeader, IonToolbar, IonTitle, IonButton, IonButtons, IonContent, IonList, IonItem, IonLabel, IonCard, IonIcon } from '@ionic/angular';
@@ -21,13 +21,21 @@ export class CategoryPage implements OnInit {
     private notesService: NotesService,
     private router: Router,
     private alertCtrl: AlertController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
-    this.notesService.getAllCategories();
-    this.notesService.categories$.subscribe(c => (this.categories = c));
-  }
+//   this.notesService.getAllCategories();
+  this.notesService.categories$.subscribe(c => {
+    this.categories = c;
+    this.cdr.markForCheck();
+  });
+}
+
+ionViewWillEnter() {
+  this.notesService.getAllCategories();
+}
 
   back() { this.router.navigate(['/my-notes']); }
 
@@ -82,6 +90,7 @@ export class CategoryPage implements OnInit {
       next: () => {
         this.deleteMode = false;
         this.selectedIds.clear();
+        this.cdr.markForCheck();
         this.presentToast('Deleted');
       },
       error: (err) => this.presentToast(err?.error?.error ?? 'Could not delete folders'),

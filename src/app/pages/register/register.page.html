@@ -27,17 +27,18 @@
         </ion-input>
       </ion-item>
       <ion-item>
-        <ion-input
-          type="password"
-          label="Password"
-          labelPlacement="stacked"
-          [(ngModel)]="password"
-          placeholder="••••••••">
+       <ion-input
+        type="password"
+        label="Password"
+        labelPlacement="stacked"
+        [(ngModel)]="password"
+        placeholder="••••••••"
+        (keyup.enter)="register()">
         </ion-input>
       </ion-item>
     </ion-list>
 
-    <ion-button expand="block" class="submit-btn" (click)="register()">Create Account</ion-button>
+    <ion-button expand="block" class="submit-btn" [disabled]="loading" (click)="register()">Create Account</ion-button>
 
     <!-- Link to login -->
     <p class="switch-link">

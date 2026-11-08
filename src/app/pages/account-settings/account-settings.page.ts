@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { AlertController, IonHeader, IonToolbar, IonButtons, IonButton, IonContent, IonList, IonItem, IonLabel, IonIcon } from '@ionic/angular';
 import { NotesService } from '../../services/notes';
+import { Auth } from '../../services/auth';
 
 @Component({
   selector: 'app-account-settings',
@@ -12,9 +13,10 @@ import { NotesService } from '../../services/notes';
   styleUrls: ['./account-settings.page.scss'],
 })
 export class AccountSettingsPage {
-  user = this.notesService.getUser();
+  get user() { return this.auth.getUser(); }
 
-  constructor(
+    constructor(
+    private auth: Auth,
     private notesService: NotesService,
     private router: Router,
     private alertCtrl: AlertController
@@ -22,20 +24,7 @@ export class AccountSettingsPage {
 
   back() { this.router.navigate(['/my-notes']); }
 
-  async changePassword() {
-    const alert = await this.alertCtrl.create({
-      header: 'Change Password',
-      inputs: [
-        { name: 'old', type: 'password', placeholder: 'Current password' },
-        { name: 'new', type: 'password', placeholder: 'New password' },
-      ],
-      buttons: [
-        { text: 'Cancel', role: 'cancel' },
-        { text: 'Save', handler: () => console.log('TODO: POST /api/change-password.php') },
-      ],
-    });
-    await alert.present();
-  }
+
 
   async logout() {
     const alert = await this.alertCtrl.create({
@@ -46,10 +35,11 @@ export class AccountSettingsPage {
         {
           text: 'Log Out',
           role: 'destructive',
-         handler: () => {
-            this.notesService.logout();
-            this.router.navigate(['/login']);
-            },
+          handler: () => {
+            this.notesService.reset();
+            this.auth.logout();
+            this.router.navigate(['/login'], { replaceUrl: true });
+          },
         },
       ],
     });

@@ -10,7 +10,7 @@ export class NotesService {
   private http = inject(HttpClient);
 
   private readonly api = 'http://localhost/api/ionic-notes-api/api/notes.php';
-  private readonly userId = 1; // hardcoded until login exists
+
 
   // ===== REACTIVE STATE =====
   private notesSubject = new BehaviorSubject<Note[]>([]);
@@ -42,26 +42,26 @@ export class NotesService {
   }
 
   // ===== LOADERS =====
-  getAllNotes() {
-    this.http.get<Note[]>(`${this.api}?type=my-notes&userId=${this.userId}`).subscribe({
-      next: res => this.notesSubject.next(res),
-      error: err => console.error(err),
-    });
-  }
+ getAllNotes() {
+  this.http.get<Note[]>(`${this.api}?type=my-notes`).subscribe({
+    next: res => this.notesSubject.next(res),
+    error: err => console.error(err),
+  });
+}
 
-  getAllSharedNotes() {
-    this.http.get<SharedNote[]>(`${this.api}?type=shared-notes&userId=${this.userId}`).subscribe({
-      next: res => this.sharedSubject.next(res),
-      error: err => console.error(err),
-    });
-  }
+getAllSharedNotes() {
+  this.http.get<SharedNote[]>(`${this.api}?type=shared-notes`).subscribe({
+    next: res => this.sharedSubject.next(res),
+    error: err => console.error(err),
+  });
+}
 
-  getAllCategories() {
-    this.http.get<Category[]>(`${this.api}?type=categories&userId=${this.userId}`).subscribe({
-      next: res => this.categoriesSubject.next(res),
-      error: err => console.error(err),
-    });
-  }
+getAllCategories() {
+  this.http.get<Category[]>(`${this.api}?type=categories`).subscribe({
+    next: res => this.categoriesSubject.next(res),
+    error: err => console.error(err),
+  });
+}
 
   // ===== NOTES =====
   getNote(id: number): Note | undefined {
@@ -75,7 +75,6 @@ export class NotesService {
   /** Create a note. Category defaults to the active filter if not given. */
   addNote(note_title: string, note_content: string, category_id?: number | null): Observable<Note> {
     const body = {
-      user_id: this.userId,
       category_id: category_id !== undefined ? category_id : this.getActiveCategoryId(),
       note_title: note_title || 'Untitled',
       note_content,
@@ -130,10 +129,17 @@ export class NotesService {
     );
   }
 
+  reset() {
+  this.notesSubject.next([]);
+  this.sharedSubject.next([]);
+  this.categoriesSubject.next([]);
+  this.activeCategorySubject.next('All');
+}
+
   // ===== CATEGORIES =====
   deleteCategories(ids: number[]) {
   return this.http
-    .delete(`${this.api}?type=category&ids=${ids.join(',')}&userId=${this.userId}`)
+    .delete(`${this.api}?type=category&ids=${ids.join(',')}&ids=${ids.join(',')}`)
     .pipe(
       tap(() => {
         // if the active filter is one of the deleted folders, go back to 'All'
@@ -156,7 +162,7 @@ export class NotesService {
 
   addCategory(category_name: string): Observable<Category> {
     return this.http
-      .post<Category>(`${this.api}?type=category`, { user_id: this.userId, category_name })
+      .post<Category>(`${this.api}?type=category`, { category_name })
       .pipe(tap(cat => this.categoriesSubject.next([...this.categoriesSubject.value, cat])));
   }
 }

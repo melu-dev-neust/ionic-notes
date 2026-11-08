@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
+
 import { MainNavbarComponent } from '../../components/main-navbar/main-navbar.component';
 import { NotesService } from '../../services/notes';
 import { Note } from '../../models/note';
@@ -19,11 +20,12 @@ export class MyNotesPage implements OnInit {
     activeCategory = 'All';
     filteredNotes: Note[] = [];
 
-    constructor(private notesService: NotesService, private router: Router) {}
+    constructor(private notesService: NotesService, private router: Router,private cdr: ChangeDetectorRef) {}
 
-    ngOnInit() {
-    this.notesService.getAllNotes();
-    this.notesService.getAllCategories();
+ ngOnInit() {
+    // console.log('my-notes init')
+    // this.notesService.getAllNotes();
+    // this.notesService.getAllCategories();
 
     this.notesService.categories$.subscribe(c => {
         this.categories = c;
@@ -40,18 +42,24 @@ export class MyNotesPage implements OnInit {
         this.applyFilter();
     });
 }
-
-    applyFilter() {
-    if (this.activeCategory === 'All') {
-        this.filteredNotes = this.notes;
-        return;
+// runs every time the page is shown, not just when it is first created
+    ionViewWillEnter() {
+        this.notesService.getAllNotes();
+        this.notesService.getAllCategories();
     }
 
-    const selectedCategory = this.categories.find(
-        c => c.category_name === this.activeCategory
-    );
-
-    this.filteredNotes = selectedCategory ? this.notes.filter(n => n.category_id === selectedCategory.category_id) : [];
+   applyFilter() {
+    if (this.activeCategory === 'All') {
+        this.filteredNotes = this.notes;
+    } else {
+        const selectedCategory = this.categories.find(
+            c => c.category_name === this.activeCategory
+        );
+        this.filteredNotes = selectedCategory
+            ? this.notes.filter(n => Number(n.category_id) === Number(selectedCategory.category_id))
+            : [];
+    }
+    this.cdr.markForCheck();
 }
 
     selectCategory(name: string) {

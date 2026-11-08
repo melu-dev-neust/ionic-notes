@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef  } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
@@ -33,7 +33,8 @@ export class NoteEditorPage implements OnInit, OnDestroy {
     private notesService: NotesService,
     private alertCtrl: AlertController,
     private actionSheetCtrl: ActionSheetController,
-    private toastCtrl: ToastController
+    private toastCtrl: ToastController,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -80,28 +81,38 @@ export class NoteEditorPage implements OnInit, OnDestroy {
   }
 
   /** Creates or updates on the server, then runs `after` */
-  private persist(after: () => void) {
-    const done = (saved: Note) => {
-      this.note = { ...saved };
-      this.isNew = false;
-      this.original = JSON.stringify(this.note);
-      after();
-    };
-    const fail = (err: any) => this.presentToast(err?.error?.error ?? 'Could not save note');
+  private saving = false;
+  
+private persist(after: () => void) {
+  if (this.saving) return; // ignore double taps while a save is in flight
+  this.saving = true;
 
-    if (this.isNew) {
-      this.notesService
-        .addNote(this.note.note_title, this.note.note_content, this.note.category_id)
-        .subscribe({ next: done, error: fail });
-    } else {
-      this.notesService
-        .updateNote(this.note.note_id, {
-          note_title: this.note.note_title,
-          note_content: this.note.note_content,
-        })
-        .subscribe({ next: done, error: fail });
-    }
+  const done = (saved: Note) => {
+    this.saving = false;
+    this.note = { ...saved };
+    this.isNew = false;
+    this.original = JSON.stringify(this.note);
+    after();
+    this.cdr.markForCheck();
+  };
+  const fail = (err: any) => {
+    this.saving = false;
+    this.presentToast(err?.error?.error ?? 'Could not save note');
+  };
+
+  if (this.isNew) {
+    this.notesService
+      .addNote(this.note.note_title, this.note.note_content, this.note.category_id)
+      .subscribe({ next: done, error: fail });
+  } else {
+    this.notesService
+      .updateNote(this.note.note_id, {
+        note_title: this.note.note_title,
+        note_content: this.note.note_content,
+      })
+      .subscribe({ next: done, error: fail });
   }
+}
 
   /** Save on back arrow */
   autosave() {

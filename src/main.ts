@@ -12,8 +12,9 @@ import { documentTextOutline, shareSocialOutline, personCircleOutline,folderOutl
 import { AppComponent } from './app/app.component';
 import { routes } from './app/app.routes';
 import { addIcons } from "ionicons";
-import { provideHttpClient } from "@angular/common/http";
+import { provideHttpClient, withInterceptors  } from "@angular/common/http";
 
+import { authInterceptor } from './app/interceptors/auth.interceptor';
 addIcons({
     'document-text-outline': documentTextOutline,
     'share-social-outline': shareSocialOutline,
@@ -32,6 +33,6 @@ bootstrapApplication(AppComponent, {
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
     provideIonicAngular(),
     provideRouter(routes, withPreloading(PreloadAllModules), withComponentInputBinding()),
-    provideHttpClient()
+    provideHttpClient(withInterceptors([authInterceptor]))
   ],
 });

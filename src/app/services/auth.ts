@@ -1,31 +1,101 @@
-import { Service } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map, tap } from 'rxjs';
+import { User } from '../models/user';
 
-@Service()
+interface AuthResponse {
+  user_id: number;
+  username: string;
+  email: string;
+  token: string;
+}
+
+@Injectable({ providedIn: 'root' })
 export class Auth {
+  private http = inject(HttpClient);
 
-      // ===== AUTH (stub — replace with HttpClient calls to your PHP API later) =====
+  private readonly api = 'http://localhost/api/ionic-notes-api/api/auth.php';
+  private readonly userKey = 'noteit_user';
+  private readonly tokenKey = 'noteit_token';
 
-  // login(email, password) / register(email, password, username) / logout()
-  // searchUser(username) etc.
-  
-/** Returns true on success. TODO: POST /api/login.php { email, password } */
-login(email: string, password: string): boolean {
-  // fake check: any non-empty credentials "succeed" for now
-  if (!email || !password) return false;
-  this._user = { id: 1, email, username: email.split('@')[0] };
-  return true;
-}
+  private user: User | null = this.loadUser();
+  private token: string | null = this.loadToken();
 
-/** Returns true on success, false if username is taken. TODO: POST /api/register.php */
-register(email: string, password: string, username: string): boolean {
-  // fake uniqueness check against a small list
-  const taken = ['alex_dev', 'admin', 'test'].includes(username.toLowerCase());
-  if (taken) return false;
-  this._user = { id: 1, email, username };
-  return true;
-}
+  login(email: string, password: string): Observable<User> {
+    return this.http.post<AuthResponse>(`${this.api}?type=login`, { email, password }).pipe(
+      tap(res => this.setSession(res)),
+      map(res => this.toUser(res))
+    );
+  }
 
-logout() {
-  // TODO: clear token
-}
+  register(email: string, password: string, username: string): Observable<User> {
+    return this.http.post<AuthResponse>(`${this.api}?type=register`, { email, password, username }).pipe(
+      tap(res => this.setSession(res)),
+      map(res => this.toUser(res))
+    );
+  }
+
+  /** Revokes the token on the server (best effort), then clears the local session */
+  logout() {
+    const token = this.token;
+    if (token) {
+      this.http
+        .post(`${this.api}?type=logout`, {}, { headers: { Authorization: `Bearer ${token}` } })
+        .subscribe({ error: () => {} });
+    }
+    this.clearSession();
+  }
+
+  /** Clears the local session only (used by the interceptor when the token is rejected) */
+  clearSession() {
+    this.user = null;
+    this.token = null;
+    try {
+      localStorage.removeItem(this.userKey);
+      localStorage.removeItem(this.tokenKey);
+    } catch {}
+  }
+
+  getUser(): User | null {
+    return this.user;
+  }
+
+  getToken(): string | null {
+    return this.token;
+  }
+
+  isLoggedIn(): boolean {
+    return this.user !== null && this.token !== null;
+  }
+
+  // ===== helpers =====
+  private toUser(res: AuthResponse): User {
+    return { id: Number(res.user_id), username: res.username, email: res.email };
+  }
+
+  private setSession(res: AuthResponse) {
+    this.user = this.toUser(res);
+    this.token = res.token;
+    try {
+      localStorage.setItem(this.userKey, JSON.stringify(this.user));
+      localStorage.setItem(this.tokenKey, res.token);
+    } catch {}
+  }
+
+  private loadUser(): User | null {
+    try {
+      const raw = localStorage.getItem(this.userKey);
+      return raw ? (JSON.parse(raw) as User) : null;
+    } catch {
+      return null;
+    }
+  }
+
+  private loadToken(): string | null {
+    try {
+      return localStorage.getItem(this.tokenKey);
+    } catch {
+      return null;
+    }
+  }
 }
