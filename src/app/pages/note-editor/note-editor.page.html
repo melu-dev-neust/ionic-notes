@@ -35,27 +35,12 @@
     </ion-toolbar>
 </ion-header>
 
+<!-- INPUTS -->
 <ion-content class="ion-padding">
-  <!-- Title -->
-  <input
-    #titleInput
-    class="note-title"
-    [readonly]="!editable"
-    [(ngModel)]="note.note_title"
-    placeholder="Title"
-    (click)="enableEdit()"
-  />
-
-  <!-- Date -->
-  <p class="updated">{{ note.created_at | date:'MMMM d, y' }}</p>
-
-  <!-- Content -->
-  <textarea
-    #contentInput
-    class="note-content"
-    [readonly]="!editable"
-    [(ngModel)]="note.note_content"
-    placeholder="Start writing…"
-    (click)="enableEdit()"
-  ></textarea>
+    <!-- Title -->
+    <input #titleInput class="note-title" [readonly]="!editable"[(ngModel)]="note.note_title"placeholder="Title"(click)="enableEdit()"/>
+    <!-- Date -->
+    <p class="updated">{{ note.created_at | date:'MMMM d, y' }}</p>
+    <!-- Content -->
+    <textarea #contentInput class="note-content"[readonly]="!editable"[(ngModel)]="note.note_content"placeholder="Start writing…"(click)="enableEdit()"></textarea>
 </ion-content>

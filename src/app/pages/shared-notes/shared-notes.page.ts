@@ -8,36 +8,38 @@ import { SharedNote } from '../../models/shared-note';
 import { IonContent, IonCard, IonCardHeader, IonCardTitle, IonCardContent } from "@ionic/angular";
 
 @Component({
-  selector: 'app-shared-notes',
-  standalone: true,
-  imports: [IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonContent, CommonModule, MainNavbarComponent],
-  templateUrl: './shared-notes.page.html',
-  styleUrls: ['./shared-notes.page.scss'],
+    selector: 'app-shared-notes',
+    standalone: true,
+    imports: [IonCardContent, IonCardTitle, IonCardHeader, IonCard, IonContent, CommonModule, MainNavbarComponent],
+    templateUrl: './shared-notes.page.html',
+    styleUrls: ['./shared-notes.page.scss'],
 })
 export class SharedNotesPage implements OnInit {
-  sharedNotes: SharedNote[] = [];
+    sharedNotes: SharedNote[] = [];
 
-  constructor(private notesService: NotesService, private router: Router, private cdr: ChangeDetectorRef) {}
+    constructor(
+        private notesService: 
+        NotesService, private router: 
+        Router, private cdr: ChangeDetectorRef
+    ) {}
 
-  private destroyRef = inject(DestroyRef);
-  ngOnInit() {
-    // this.notesService.getAllSharedNotes();
-    // this.notesService.sharedNotes$.subscribe(n => (this.sharedNotes = n));
-    // this.cdr.markForCheck();
-      this.notesService.sharedNotes$
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(n => {
-      this.sharedNotes = n;
-      this.cdr.detectChanges();
-    });
-  }
+    private destroyRef = inject(DestroyRef);
 
-  ionViewWillEnter() {
-    console.log('ion-view-enter shared note');
-  this.notesService.getAllSharedNotes();
-}
+    ngOnInit() {
+        // this.notesService.getAllSharedNotes();
+        // this.notesService.sharedNotes$.subscribe(n => (this.sharedNotes = n));
+        // this.cdr.markForCheck();
+        this.notesService.sharedNotes$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe(n => {
+            this.sharedNotes = n;
+            this.cdr.detectChanges();
+        });
+    }
 
-  openNote(note: SharedNote) {
-    this.router.navigate(['/note-editor', note.sharedNote_id], { queryParams: { shared: true } });
-  }
+    ionViewWillEnter() {
+        this.notesService.getAllSharedNotes();
+    }
+
+    openNote(note: SharedNote) {
+        this.router.navigate(['/note-editor', note.sharedNote_id], { queryParams: { shared: true } });
+    }
 }

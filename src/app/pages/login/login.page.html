@@ -1,40 +1,25 @@
 <ion-content class="ion-padding auth-content">
-  <div class="auth-wrap">
-    <!-- Brand header -->
-    <div class="brand">
-      <ion-icon name="book-outline" class="brand-icon"></ion-icon>
-      <h1>Note IT</h1>
+    <div class="auth-wrap">
+        <!-- Brand header -->
+        <div class="brand">
+            <ion-icon name="book-outline" class="brand-icon"></ion-icon>
+            <h1>Note IT</h1>
+        </div>
+
+        <!-- Inputs -->
+        <ion-list lines="none" class="auth-form">
+            <ion-item>
+                <ion-input type="email" label="Email" labelPlacement="stacked" [(ngModel)]="email" placeholder="you@example.com"></ion-input>
+            </ion-item>
+
+            <ion-item>
+                <ion-input type="password"label="Password"labelPlacement="stacked"[(ngModel)]="password"placeholder="••••••••"(keyup.enter)="login()"></ion-input>
+            </ion-item>
+        </ion-list>
+
+        <ion-button expand="block" class="submit-btn" [disabled]="loading" (click)="login()">Log In</ion-button>
+
+        <!-- Link to register -->
+        <p class="switch-link">Don't have an account? <a routerLink="/register">Register</a></p>
     </div>
-
-    <!-- Inputs -->
-    <ion-list lines="none" class="auth-form">
-      <ion-item>
-        <ion-input
-          type="email"
-          label="Email"
-          labelPlacement="stacked"
-          [(ngModel)]="email"
-          placeholder="you@example.com">
-        </ion-input>
-      </ion-item>
-      <ion-item>
-       <ion-input
-        type="password"
-        label="Password"
-        labelPlacement="stacked"
-        [(ngModel)]="password"
-        placeholder="••••••••"
-        (keyup.enter)="login()">
-        </ion-input>
-      </ion-item>
-    </ion-list>
-
-    <ion-button expand="block" class="submit-btn" [disabled]="loading" (click)="login()">Log In</ion-button>
-
-    <!-- Link to register -->
-    <p class="switch-link">
-      Don't have an account?
-      <a routerLink="/register">Register</a>
-    </p>
-  </div>
 </ion-content>

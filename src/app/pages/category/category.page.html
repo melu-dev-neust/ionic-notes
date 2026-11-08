@@ -1,48 +1,43 @@
 <ion-header>
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-button (click)="back()"><ion-icon slot="icon-only" name="arrow-back"></ion-icon></ion-button>
-    </ion-buttons>
-    <ion-title>Folder</ion-title>
-    <ion-buttons slot="end">
-      <ion-button (click)="toggleDeleteMode()">
-        <ion-icon slot="icon-only" [name]="deleteMode ? 'close' : 'trash-outline'"></ion-icon>
-      </ion-button>
-    </ion-buttons>
-  </ion-toolbar>
+    <ion-toolbar>
+        <!-- Back icon -->
+        <ion-buttons slot="start">
+            <ion-button (click)="back()"><ion-icon slot="icon-only" name="arrow-back"></ion-icon></ion-button>
+        </ion-buttons>
+        <ion-title>Folder</ion-title>
+
+        <!-- Delete icon -->
+        <ion-buttons slot="end">
+            <ion-button (click)="toggleDeleteMode()">
+                <ion-icon slot="icon-only" [name]="deleteMode ? 'close' : 'trash-outline'"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+
+    </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-list>
-    <!-- "All" is not selectable in delete mode -->
-    <ion-item lines="none" button [disabled]="deleteMode" (click)="selectCategory('All')">
-      <ion-label>All</ion-label>
-    </ion-item>
+    <ion-list>
+        <!-- "All" is not selectable in delete mode -->
+        <ion-item lines="none" button [disabled]="deleteMode" (click)="selectCategory('All')">
+            <ion-label>All</ion-label>
+        </ion-item>
 
-    <ion-item
-      *ngFor="let c of categories"
-      lines="none"
-      button
-      [class.selected]="isSelected(c)"
-      (click)="onItemClick(c)">
-      <ion-label>{{ c.category_name }}</ion-label>
-    </ion-item>
-  </ion-list>
+        @for(c of categories; track $index){
+            <ion-item lines="none" button [class.selected]="isSelected(c)" (click)="onItemClick(c)">
+                <ion-label>{{ c.category_name }}</ion-label>
+            </ion-item>
+        }
+    </ion-list>
 
-  @if (!deleteMode) {
-    <ion-card class="new-folder" button (click)="newFolder()">
-      <ion-icon name="add" class="plus"></ion-icon>
-      <span>New Folder</span>
-    </ion-card>
-  } @else {
-    <ion-button
-      class="delete-folder"
-      expand="block"
-      fill="clear"
-      color="danger"
-      [disabled]="selectedIds.size === 0"
-      (click)="confirmDelete()">
-      Delete{{ selectedIds.size ? ' (' + selectedIds.size + ')' : '' }}
-    </ion-button>
-  }
+    @if (!deleteMode) {
+        <ion-card class="new-folder" button (click)="newFolder()">
+            <ion-icon name="add" class="plus"></ion-icon>
+            <span>New Folder</span>
+        </ion-card>
+    } @else {
+        <ion-button class="delete-folder" expand="block" fill="clear" color="danger" [disabled]="selectedIds.size === 0" (click)="confirmDelete()">
+            Delete{{ selectedIds.size ? ' (' + selectedIds.size + ')' : '' }}
+        </ion-button>
+    }
 </ion-content>

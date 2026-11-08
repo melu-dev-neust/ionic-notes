@@ -1,49 +1,38 @@
 <ion-content class="ion-padding auth-content">
-  <div class="auth-wrap">
-    <!-- Brand header -->
-    <div class="brand">
-      <ion-icon name="book-outline" class="brand-icon"></ion-icon>
-      <h1>Note IT</h1>
+    <div class="auth-wrap">
+        <!-- Brand header -->
+        <div class="brand">
+            <ion-icon name="book-outline" class="brand-icon"></ion-icon>
+            <h1>Note IT</h1>
+        </div>
+
+        <!-- Inputs -->
+        <ion-list lines="none" class="auth-form">
+            <!-- username -->
+            <ion-item>
+                <ion-input type="text" label="Username" labelPlacement="stacked" [(ngModel)]="username"
+                    placeholder="your_username">
+                </ion-input>
+            </ion-item>
+            <!-- email -->
+            <ion-item>
+                <ion-input type="email" label="Email" labelPlacement="stacked" [(ngModel)]="email"
+                    placeholder="you@example.com">
+                </ion-input>
+            </ion-item>
+            <!-- password -->
+            <ion-item>
+                <ion-input type="password" label="Password" labelPlacement="stacked" [(ngModel)]="password"
+                    placeholder="••••••••" (keyup.enter)="register()">
+                </ion-input>
+            </ion-item>
+
+        </ion-list>
+
+        <ion-button expand="block" class="submit-btn" [disabled]="loading" (click)="register()">Create Account</ion-button>
+
+        <!-- Link to login -->
+        <p class="switch-link">Already have an account? <a routerLink="/login">Log In</a></p>
+
     </div>
-
-    <!-- Inputs -->
-    <ion-list lines="none" class="auth-form">
-      <ion-item>
-        <ion-input
-          type="text"
-          label="Username"
-          labelPlacement="stacked"
-          [(ngModel)]="username"
-          placeholder="your_username">
-        </ion-input>
-      </ion-item>
-      <ion-item>
-        <ion-input
-          type="email"
-          label="Email"
-          labelPlacement="stacked"
-          [(ngModel)]="email"
-          placeholder="you@example.com">
-        </ion-input>
-      </ion-item>
-      <ion-item>
-       <ion-input
-        type="password"
-        label="Password"
-        labelPlacement="stacked"
-        [(ngModel)]="password"
-        placeholder="••••••••"
-        (keyup.enter)="register()">
-        </ion-input>
-      </ion-item>
-    </ion-list>
-
-    <ion-button expand="block" class="submit-btn" [disabled]="loading" (click)="register()">Create Account</ion-button>
-
-    <!-- Link to login -->
-    <p class="switch-link">
-      Already have an account?
-      <a routerLink="/login">Log In</a>
-    </p>
-  </div>
 </ion-content>

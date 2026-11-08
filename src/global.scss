@@ -35,3 +35,293 @@
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
 // @import '@ionic/angular/css/palettes/dark.system.css';
+
+
+//logout modal css
+ion-alert.logout-alert {
+    --background: var(--note-surface);
+    --backdrop-opacity: 0.7;
+    --width: 320px;
+    --max-width: 90%;
+    --border-radius: 18px;
+
+    .alert-head {
+        padding-bottom: 8px;
+    }
+
+    .alert-title {
+        color: var(--note-text);
+        font-size: 1.4rem;
+        font-weight: 700;
+    }
+
+    .alert-message {
+        color: var(--note-text-faint);
+        font-size: 0.9rem;
+    }
+
+    .alert-button-group {
+        padding: 8px 16px 16px;
+    }
+
+    .alert-button {
+        font-weight: 600;
+        border-radius: 10px;
+    }
+
+    .alert-button-role-cancel {
+        color: var(--note-text-faint);
+    }
+
+    .alert-button-role-destructive {
+        color: #ff5252;
+    }
+}
+
+//confirm delete css
+ion-alert.delete-alert {
+    --background: var(--note-surface);
+    --backdrop-opacity: 0.7;
+    --width: 320px;
+    --max-width: 90%;
+    --border-radius: 18px;
+
+    .alert-head {
+        padding-bottom: 8px;
+    }
+
+    .alert-title {
+        color: var(--note-text);
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .alert-message {
+        color: var(--note-text-faint);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .alert-button-group {
+        padding: 8px 16px 16px;
+    }
+
+    .alert-button {
+        font-weight: 600;
+        border-radius: 10px;
+    }
+
+    .alert-button-role-cancel {
+        color: var(--note-text-faint);
+    }
+
+    .alert-button-role-destructive {
+        color: #ff5252;
+    }
+}
+
+//new folder modal css
+ion-alert.new-folder-alert {
+    --background: var(--note-surface);
+    --backdrop-opacity: 0.7;
+    --width: 320px;
+    --max-width: 90%;
+    --border-radius: 18px;
+
+    .alert-head {
+        padding-bottom: 12px;
+    }
+
+    .alert-title {
+        color: var(--note-text);
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    // Input container
+    .alert-input-group {
+        padding: 0 16px;
+    }
+
+    .alert-input {
+        background: var(--note-bg);
+        border: 1px solid var(--note-line);
+        border-radius: 10px;
+        color: var(--note-text);
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .alert-input::placeholder {
+        color: var(--note-text-faint);
+        opacity: 0.8;
+    }
+
+    .alert-button-group {
+        padding: 8px 16px 16px;
+    }
+
+    .alert-button {
+        font-weight: 600;
+        border-radius: 10px;
+    }
+
+    .alert-button-role-cancel {
+        color: var(--note-text-faint);
+    }
+
+    // Create button
+    .alert-button:not(.alert-button-role-cancel) {
+        color: var(--note-violet-soft);
+    }
+}
+
+//Share note modal css
+ion-alert.share-note-alert {
+    --background: var(--note-surface);
+    --backdrop-opacity: 0.7;
+    --width: 320px;
+    --max-width: 90%;
+    --border-radius: 18px;
+
+    .alert-head {
+        padding-bottom: 8px;
+    }
+
+    .alert-title {
+        color: var(--note-text);
+        font-size: 1.2rem;
+        font-weight: 700;
+    }
+
+    .alert-message {
+        color: var(--note-text-faint);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    // Username input
+    .alert-input-group {
+        padding: 0 16px;
+    }
+
+    .alert-input {
+        background: var(--note-bg);
+        border: 1px solid var(--note-line);
+        border-radius: 10px;
+        color: var(--note-text);
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .alert-input::placeholder {
+        color: var(--note-text-faint);
+        opacity: 0.8;
+    }
+
+    .alert-button-group {
+        padding: 8px 16px 16px;
+    }
+
+    .alert-button {
+        font-weight: 600;
+        border-radius: 10px;
+    }
+
+    .alert-button-role-cancel {
+        color: var(--note-text-faint);
+    }
+
+    // Share button
+    .alert-button:not(.alert-button-role-cancel) {
+        color: var(--note-violet-soft);
+    }
+}
+
+//category move css
+ion-action-sheet.move-folder-sheet {
+    --background: var(--note-surface);
+    --backdrop-opacity: 0.7;
+    --button-background: var(--note-surface);
+    --button-background-activated: var(--note-bg);
+    --button-background-selected: var(--note-bg);
+    --button-color: var(--note-text);
+    --button-color-activated: var(--note-violet-soft);
+    --button-color-selected: var(--note-violet-soft);
+    --button-border-radius: 10px;
+    --button-font-weight: 500;
+
+    --header-background: var(--note-surface);
+    --header-color: var(--note-text-faint);
+
+    --color: var(--note-text);
+    --border-radius: 18px;
+
+    .action-sheet-title {
+        color: var(--note-text);
+        font-size: 1rem;
+        font-weight: 700;
+        padding-bottom: 12px;
+    }
+
+    .action-sheet-button {
+        font-size: 0.95rem;
+        font-weight: 500;
+        min-height: 52px;
+    }
+
+    .action-sheet-button-inner {
+        padding-inline: 8px;
+    }
+
+    .action-sheet-cancel {
+        color: var(--note-text-faint);
+        font-weight: 600;
+    }
+
+    .action-sheet-group {
+        background: var(--note-surface);
+    }
+}
+
+//note delete confirm modal css
+ion-alert.delete-note-alert {
+    --background: var(--note-surface);
+    --backdrop-opacity: 0.7;
+    --width: 320px;
+    --max-width: 90%;
+    --border-radius: 18px;
+
+    .alert-head {
+        padding-bottom: 8px;
+    }
+
+    .alert-title {
+        color: var(--note-text);
+        font-size: 1.3rem;
+        font-weight: 700;
+    }
+
+    .alert-message {
+        color: var(--note-text-faint);
+        font-size: 0.9rem;
+        line-height: 1.5;
+    }
+
+    .alert-button-group {
+        padding: 8px 16px 16px;
+    }
+
+    .alert-button {
+        font-weight: 600;
+        border-radius: 10px;
+    }
+
+    .alert-button-role-cancel {
+        color: var(--note-text-faint);
+    }
+
+    .alert-button-role-destructive {
+        color: #ff5252;
+    }
+}
