@@ -21,22 +21,26 @@
     </div>
 
     <!-- Notes masonry -->
-    <div class="masonry">
-        @for(note of filteredNotes; track $index){
-            <ion-card class="note-card ion-activatable" (click)="openNote(note)">
-                
-                <ion-card-header>
-                    <ion-card-title>{{ note.note_title }}</ion-card-title>
-                </ion-card-header>
+<div class="masonry">
+    @for(col of columns; track $index){
+        <div class="masonry-col">
+            @for(note of col; track note.note_id){
+                <ion-card class="note-card ion-activatable" (click)="openNote(note)">
 
-                <ion-card-content>
-                    <p class="excerpt">{{ note.note_content }}</p>
-                    <p class="date">{{ note.created_at | date:'MMM d, y' }}</p>
-                </ion-card-content>
+                    <ion-card-header>
+                        <ion-card-title>{{ note.note_title }}</ion-card-title>
+                    </ion-card-header>
 
-            </ion-card>
-        }
-    </div>
+                    <ion-card-content>
+                        <p class="excerpt">{{ note.note_content }}</p>
+                        <p class="date">{{ note.created_at | date:'MMM d, y' }}</p>
+                    </ion-card-content>
+
+                </ion-card>
+            }
+        </div>
+    }
+</div>
 
     <!-- Add button -->
     <ion-fab vertical="bottom" horizontal="end" slot="fixed">

@@ -1,7 +1,8 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, HostListener } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterLink } from '@angular/router';
 
+import { distributeMasonry, masonryColumnCount } from '../../utils/masonry';
 import { MainNavbarComponent } from '../../components/main-navbar/main-navbar.component';
 import { NotesService } from '../../services/notes';
 import { Note } from '../../models/note';
@@ -19,6 +20,7 @@ export class MyNotesPage implements OnInit {
     notes: Note[] = [];
     activeCategory = 'All';
     filteredNotes: Note[] = [];
+    columns: Note[][] = [];
 
     constructor(private notesService: NotesService, private router: Router,private cdr: ChangeDetectorRef) {}
 
@@ -53,10 +55,29 @@ export class MyNotesPage implements OnInit {
         if (this.activeCategory === 'All') {
             this.filteredNotes = this.notes;
         } else {
-            const selectedCategory = this.categories.find(c => c.category_name === this.activeCategory);
-            this.filteredNotes = selectedCategory ? this.notes.filter(n => Number(n.category_id) === Number(selectedCategory.category_id)) : [];
+            const selectedCategory = this.categories.find(
+                c => c.category_name === this.activeCategory
+            );
+            this.filteredNotes = selectedCategory
+                ? this.notes.filter(n => Number(n.category_id) === Number(selectedCategory.category_id))
+                : [];
         }
+        this.buildColumns();
         this.cdr.markForCheck();
+    }
+
+    private buildColumns() {
+        this.columns = distributeMasonry(
+            this.filteredNotes,
+            masonryColumnCount(),
+            n => ({ title: n.note_title, content: n.note_content })
+        );
+    }
+
+    // rebuild when the screen is rotated or resized
+    @HostListener('window:resize')
+    onResize() {
+        this.buildColumns();
     }
 
     selectCategory(name: string) {

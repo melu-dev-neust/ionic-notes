@@ -1,41 +1,44 @@
 ion-header ion-toolbar {
-  --background: var(--note-bg);
-  --border-width: 0;
-}
-ion-content {
-  --background: var(--note-bg);
-  --padding-top: 16px;
-  --padding-start: var(--note-page-pad);
-  --padding-end: var(--note-page-pad);
+    --background: var(--note-bg);
+    --border-width: 0;
 }
 
-ion-button { --color: var(--note-violet-soft); }
+ion-content {
+    --background: var(--note-bg);
+    --padding-top: 16px;
+    --padding-start: var(--note-page-pad);
+    --padding-end: var(--note-page-pad);
+}
+
+ion-button {
+    --color: var(--note-violet-soft);
+}
 
 .note-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  width: 100%;
-  border: none;
-  outline: none;
-  background: transparent;
-  color: var(--note-text);
-  padding: 0;
+    font-size: 1.5rem;
+    font-weight: 700;
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    color: var(--note-text);
+    padding: 0;
 }
 
 .updated {
-  font-size: 0.75rem;
-  color: var(--note-text-faint);
-  margin: 4px 0 16px;
+    font-size: 0.75rem;
+    color: var(--note-text-faint);
+    margin: 4px 0 16px;
 }
 
 .note-content {
-  width: 100%;
-  min-height: 60vh;
-  border: none;
-  outline: none;
-  resize: none;
-  background: transparent;
-  font-size: 1rem;
-  line-height: 1.6;
-  color: var(--note-text-muted);
+    width: 100%;
+    min-height: 60vh;
+    border: none;
+    outline: none;
+    resize: none;
+    background: transparent;
+    font-size: 1rem;
+    line-height: 1.6;
+    color: var(--note-text-muted);
 }

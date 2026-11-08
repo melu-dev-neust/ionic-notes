@@ -1,20 +1,24 @@
 <app-main-navbar active="shared"></app-main-navbar>
 
 <ion-content>
-    <div class="masonry">
-        @for(note of sharedNotes; track note.sharedNote_id){
-            <ion-card class="note-card ion-activatable" (click)="openNote(note)">
+   <div class="masonry">
+    @for(col of columns(); track $index){
+        <div class="masonry-col">
+            @for(note of col; track note.sharedNote_id){
+                <ion-card class="note-card ion-activatable" (click)="openNote(note)">
 
-                <ion-card-header>
-                    <ion-card-title>{{ note.sharedNote_title }}</ion-card-title>
-                </ion-card-header>
+                    <ion-card-header>
+                        <ion-card-title>{{ note.sharedNote_title }}</ion-card-title>
+                    </ion-card-header>
 
-                <ion-card-content>
-                    <p class="excerpt">{{ note.sharedNote_content }}</p>
-                    <p class="date">{{ note.created_at | date:'MMM d, y' }}</p>
-                </ion-card-content>
+                    <ion-card-content>
+                        <p class="excerpt">{{ note.sharedNote_content }}</p>
+                        <p class="date">{{ note.created_at | date:'MMM d, y' }}</p>
+                    </ion-card-content>
 
-            </ion-card>
-        }
-    </div>
+                </ion-card>
+            }
+        </div>
+    }
+</div>
 </ion-content>
