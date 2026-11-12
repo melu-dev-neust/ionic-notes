@@ -8,7 +8,8 @@ ion-toolbar.custom-toolbar {
     --padding-bottom: 0;
     --padding-start: 0;
     --padding-end: 0;
-    height: 54px;
+    // no fixed height: the toolbar is the status bar space + 54px
+    padding-top: var(--ion-safe-area-top, 0px);
 }
 
 .navigation {

@@ -3,7 +3,7 @@ ion-header ion-toolbar {
     --border-width: 0;
     --padding-start: var(--note-page-pad);
     --padding-end: var(--note-page-pad);
-    padding: 5px 0;
+    padding-top: var(--ion-safe-area-top, 0px);
 }
 
 ion-content {
