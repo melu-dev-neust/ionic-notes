@@ -1,46 +1,90 @@
 <ion-header>
     <ion-toolbar>
+
         <!-- Back button -->
         <ion-buttons slot="start">
             <ion-button (click)="autosave()">
-                <ion-icon slot="icon-only" [name]="editable ? 'arrow-back' : 'arrow-back'"></ion-icon>
+                <ion-icon
+                    slot="icon-only"
+                    name="arrow-back"
+                ></ion-icon>
             </ion-button>
         </ion-buttons>
 
-        <!-- Editable mode: Show Check button -->
-        @if(editable){
+        <!-- Editable mode -->
+        @if(editable) {
             <ion-buttons slot="end">
                 <ion-button (click)="saveNote()">
-                    <ion-icon slot="icon-only" name="checkmark-outline"></ion-icon>
+                    <ion-icon
+                        slot="icon-only"
+                        name="checkmark-outline"
+                    ></ion-icon>
                 </ion-button>
             </ion-buttons>
         }
-        
-        @if(!editable){
-            <!-- Read-only mode: Show Share, Move, Delete -->
+
+        <!-- Read-only mode -->
+        @if(!editable) {
             <ion-buttons slot="end">
                 <ion-button (click)="share()">
-                    <ion-icon slot="icon-only" name="share-social-outline"></ion-icon>
+                    <ion-icon
+                        slot="icon-only"
+                        name="share-social-outline"
+                    ></ion-icon>
                 </ion-button>
 
                 <ion-button (click)="move()">
-                    <ion-icon slot="icon-only" name="folder-open-outline"></ion-icon>
+                    <ion-icon
+                        slot="icon-only"
+                        name="folder-open-outline"
+                    ></ion-icon>
                 </ion-button>
 
                 <ion-button (click)="confirmDelete()">
-                    <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                    <ion-icon
+                        slot="icon-only"
+                        name="trash-outline"
+                    ></ion-icon>
                 </ion-button>
             </ion-buttons>
         }
+
     </ion-toolbar>
 </ion-header>
 
-<!-- INPUTS -->
 <ion-content class="ion-padding">
+
     <!-- Title -->
-    <input #titleInput class="note-title" [readonly]="!editable"[(ngModel)]="note.note_title"placeholder="Title"(click)="enableEdit()"/>
+    <input
+        #titleInput
+        class="note-title"
+        [readonly]="!editable"
+        [(ngModel)]="note.note_title"
+        placeholder="Title"
+        (click)="enableEdit()"
+    />
+
     <!-- Date -->
-    <p class="updated">{{ note.created_at | date:'MMMM d, y' }}</p>
+    <p class="updated">
+        {{ note.created_at | date:'MMMM d, y' }}
+    </p>
+
+    <!-- Received from -->
+    @if(isShared) {
+        <p class="received-from">
+            Received from:
+            <strong>@{{ receivedFromUsername }}</strong>
+        </p>
+    }
+
     <!-- Content -->
-    <textarea #contentInput class="note-content"[readonly]="!editable"[(ngModel)]="note.note_content"placeholder="Start writing…"(click)="enableEdit()"></textarea>
+    <textarea
+        #contentInput
+        class="note-content"
+        [readonly]="!editable"
+        [(ngModel)]="note.note_content"
+        placeholder="Start writing…"
+        (click)="enableEdit()"
+    ></textarea>
+
 </ion-content>

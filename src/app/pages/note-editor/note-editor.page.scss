@@ -42,3 +42,15 @@ ion-button {
     line-height: 1.6;
     color: var(--note-text-muted);
 }
+
+.received-from {
+    font-size: 13px;
+    color: #888;
+    margin-top: -8px;
+    margin-bottom: 20px;
+
+    strong {
+        color: var(--ion-color-primary);
+        font-weight: 600;
+    }
+}

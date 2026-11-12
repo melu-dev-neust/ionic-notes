@@ -6,5 +6,5 @@ export interface SharedNote {
     sharedNote_title: string;
     sharedNote_content: string;
     created_at: string;
-    received_from_username?: string;
+    received_from_username: string;
 }

@@ -17,6 +17,8 @@ import { HapticsService } from '../../services/haptics';
 export class NoteEditorPage implements OnInit {
     private haptics = inject(HapticsService);
 
+    receivedFromUsername = '';
+
     note: Note = {
         note_id: 0,
         user_id: 1,
@@ -42,36 +44,55 @@ export class NoteEditorPage implements OnInit {
     ) {}
 
     ngOnInit() {
-        const idParam = this.route.snapshot.paramMap.get('id');
-        this.isShared = this.route.snapshot.queryParamMap.get('shared') === 'true';
+    const idParam = this.route.snapshot.paramMap.get('id');
 
-        if (idParam === 'new' || idParam === null) {
-            this.isNew = true;
-            this.editable = true;
-            this.note.category_id = this.notesService.getActiveCategoryId();
+    this.isShared =
+        this.route.snapshot.queryParamMap.get('shared') === 'true';
+
+    if (idParam === 'new' || idParam === null) {
+        this.isNew = true;
+        this.editable = true;
+        this.note.category_id = this.notesService.getActiveCategoryId();
+        return;
+    }
+
+    if (this.isShared) {
+
+        const s = this.notesService.getSharedNote(+idParam);
+
+        if (!s) {
+            this.goBack();
             return;
         }
 
-        if (this.isShared) {
-            const s = this.notesService.getSharedNote(+idParam);
-        if (!s) { this.goBack(); return; }
-            // map the shared note into the Note shape so the same template works
-            this.note = {
-                note_id: s.sharedNote_id,
-                user_id: s.user_id,
-                category_id: null,
-                note_title: s.sharedNote_title,
-                note_content: s.sharedNote_content,
-                created_at: s.created_at,
-            };
-        } else {
-            const existing = this.notesService.getNote(+idParam);
-                if (!existing) { this.goBack(); return; }
-                this.note = { ...existing };
-            }
-        this.editable = false;
-        this.original = JSON.stringify(this.note);
+        // Map shared note into Note shape
+        this.note = {
+            note_id: s.sharedNote_id,
+            user_id: s.user_id,
+            category_id: null,
+            note_title: s.sharedNote_title,
+            note_content: s.sharedNote_content,
+            created_at: s.created_at,
+        };
+
+        // Get sender's username
+        this.receivedFromUsername = s.received_from_username;
+
+    } else {
+
+        const existing = this.notesService.getNote(+idParam);
+
+        if (!existing) {
+            this.goBack();
+            return;
+        }
+
+        this.note = { ...existing };
     }
+
+    this.editable = false;
+    this.original = JSON.stringify(this.note);
+}
 
     enableEdit() {
         if (this.isShared) return;
